@@ -1,0 +1,4 @@
+site_name: pyFGLT
+site_url: https://fcdimitr.github.io/pyfglt
+theme:
+  name: material

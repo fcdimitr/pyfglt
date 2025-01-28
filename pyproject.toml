@@ -10,12 +10,22 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License"
 ]
 dependencies = [
-
+    "numpy >= 1.19.5",
+    "scipy >= 1.7.3",
+    "nextprod >= 1.0",
 ]
 
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+
+# [build-system]
+# requires = [
+#   "wheel", # python package distribution lib.
+#   "meson>=1.1.0", # meson buildsystem
+#   'meson-python>=0.12.1', # meson to pip adapter
+#   "pybind11>=2.10.4", # c++ to Python binding
+#   "ninja>=1.11.1", # build tool for meson to use
+# ]
+# build-backend = 'mesonpy'
+
 
 [project.urls]
 Homepage = "https://github.com/fcdimitr/pyfglt"
@@ -26,3 +36,6 @@ CI = "https://github.com/fcdimitr/pyfglt/actions"
 
 [project.optional-dependencies]
 test = ["pytest"]
+docs = [
+    "mkdocs-material>=9.5.50"
+  ]
