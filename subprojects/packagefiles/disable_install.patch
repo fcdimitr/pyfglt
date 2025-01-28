@@ -1,0 +1,49 @@
+diff --git a/meson.build b/meson.build
+index 0d84d9b..6ff0a80 100644
+--- a/meson.build
++++ b/meson.build
+@@ -86,34 +86,16 @@ fglthpp = configure_file(copy: true,
+ 
+ install_headers('lib/fglt.hpp')
+ 
+-fglt_lib = library('fglt' + str_cs + str_san, 'lib/fglt.cpp',
+-                   cpp_args : cpp_args_cs + cpp_args_san,
+-                   link_args : link_args_cs + link_args_san,
+-                   install : true, install_dir : 'lib',
+-                   soversion : '0')
+-
+-e = executable('fglt' + str_cs + str_san, 'src/fglt_mtx.cpp',
+-               link_with : fglt_lib,
+-               cpp_args : cpp_args_cs + cpp_args_san,
+-               link_args : link_args_cs + link_args_san,
+-               install : true,
+-               install_rpath : get_option('prefix') / 'lib')
+-
+-#  Cilkscale-benchmark targets
+-if cpp_args_bench != []
+-  fglt_lib_bench = library('fglt' + str_bench, 'lib/fglt.cpp',
+-                           cpp_args : cpp_args_bench,
+-                           link_args : link_args_bench,
+-                           install : true, install_dir : 'lib',
+-                           soversion : '0')
+-  e_bench = executable('fglt' + str_bench, 'src/fglt_mtx.cpp',
+-                       link_with : fglt_lib_bench,
+-                       cpp_args : cpp_args_bench,
+-                       link_args : link_args_bench,
+-                       install : true,
+-                       install_rpath : get_option('prefix') / 'lib')
+-endif
++
++static_fglt = static_library('fglt' + str_cs + str_san, 'lib/fglt.cpp',
++                             cpp_args : cpp_args_cs + cpp_args_san,
++                             link_args : link_args_cs + link_args_san,
++                             install : false)
+ 
+ # ========== tests & benchmark
+ 
+-subdir('testdata')
++fgltlib_inc = include_directories('lib')
++fgltlib_dep = declare_dependency(
++  link_with: static_fglt,
++  include_directories: fgltlib_inc
++)

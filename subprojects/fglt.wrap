@@ -1,0 +1,6 @@
+[wrap-git]
+directory = fglt-2.0.0
+url = https://github.com/fcdimitr/fglt.git
+revision = 847eece4e710dfcef13e784ef0f82ff592844804
+# source_hash = abb4afe8d0f7515787ca71f5220d6891eba73622ec3f813af07a2f90ae9d89ec
+diff_files  = disable_install.patch

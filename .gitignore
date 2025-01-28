@@ -9,3 +9,7 @@ venv
 .DS_Store
 dist
 build
+
+subprojects/packagecache/
+subprojects/fglt*/
+.DS_Store

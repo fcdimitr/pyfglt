@@ -16,15 +16,15 @@ dependencies = [
 ]
 
 
-# [build-system]
-# requires = [
-#   "wheel", # python package distribution lib.
-#   "meson>=1.1.0", # meson buildsystem
-#   'meson-python>=0.12.1', # meson to pip adapter
-#   "pybind11>=2.10.4", # c++ to Python binding
-#   "ninja>=1.11.1", # build tool for meson to use
-# ]
-# build-backend = 'mesonpy'
+[build-system]
+requires = [
+  "wheel", # python package distribution lib.
+  "meson>=1.1.0", # meson buildsystem
+  'meson-python>=0.12.1', # meson to pip adapter
+  "pybind11>=2.10.4", # c++ to Python binding
+  "ninja>=1.11.1", # build tool for meson to use
+]
+build-backend = 'mesonpy'
 
 
 [project.urls]
