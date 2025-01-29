@@ -1,20 +1,31 @@
 # This CITATION.cff file was generated with cffinit.
 # Visit https://bit.ly/cffinit to generate yours today!
 
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-title: Fast graphlet transform of sparse graphs
+title: "pyfglt: Fast graphlet transform of sparse graphs in Python"
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
-type: article
+type: software
 authors:
+  - family-names: Floros
+    given-names: Dimitris
+repository-code: 'https://github.com/fcdimitr/pyfglt'
+url: 'https://fcdimitr.github.io/pyfglt'
+preferred-citation:
+  type: article
+  authors:
   - family-names: Floros
     given-names: Dimitris
   - family-names: Pitsianis
     given-names: Nikos
   - family-names: Sun
     given-names: Xiaobai
-identifiers:
-  - type: doi
-    value: 10.1109/HPEC43674.2020.9286205
-url: 'http://dx.doi.org/10.1109/HPEC43674.2020.9286205'
+  journal: "IEEE HPEC"
+  start: 1 # First page number
+  end: 8 # Last page number
+  title: "Fast graphlet transform of sparse graphs"
+  year: 2020
