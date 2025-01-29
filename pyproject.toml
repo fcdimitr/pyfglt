@@ -33,6 +33,7 @@ Homepage = "https://github.com/fcdimitr/pyfglt"
 Changelog = "https://github.com/fcdimitr/pyfglt/releases"
 Issues = "https://github.com/fcdimitr/pyfglt/issues"
 CI = "https://github.com/fcdimitr/pyfglt/actions"
+Documentation = "https://fcdimitr.github.io/pyfglt/"
 
 
 [project.optional-dependencies]
