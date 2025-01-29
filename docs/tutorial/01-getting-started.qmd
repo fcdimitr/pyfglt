@@ -1,0 +1,79 @@
+---
+title: "Getting started"
+format: gfm+footnotes+backtick_code_blocks+yaml_metadata_block
+jupyter: python3
+---
+
+# Getting started: usage
+
+We provide a case study of the Fast Graphlet Transform, using Karate club, a small real-world dataset.
+
+## Prerequisites
+
+You need to install the following packages for this demo.
+
+```bash
+pip install pyfglt networkx matplotlib seaborn
+```
+
+## Karate Club
+
+We will use Zachary’s Karate Club graph for the demonstration.
+
+Zachary W. (1977). An information flow model for conflict and fission in small groups. Journal of Anthropological Research, 33, 452-473.
+
+
+### Load network
+
+
+```{python}
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+seed = 0  # seed random number generators for reproducibility
+
+G = nx.karate_club_graph()
+
+pos = nx.spring_layout(G, seed=seed)
+
+fig, ax = plt.subplots()
+
+nx.draw_networkx_nodes(G, pos, ax=ax, node_size=20)
+nx.draw_networkx_edges(G, pos, ax=ax, alpha=0.4)
+
+plt.show()
+```
+
+### Compute fast graphlet transform
+
+```{python}
+#| label: tbl-planets
+#| tbl-cap: Astronomical object
+
+import pyfglt.fglt as fg
+
+f, fn = fg.compute(G)
+```
+
+The returned object is a dataframe where rows correspond to nodes and columns to the 16 graphlets up to 4-node graphlets.
+For example, we can see the number of each graphlet incident to the first 5 nodes:
+
+```python
+fn.head()
+```
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown(fn.head().to_markdown())
+```
+
+### Visualize graphlet distributions
+
+```{python}
+import seaborn as sns
+pg = sns.PairGrid(fn.iloc[:,1:5])
+pg.map_diag(sns.histplot, fill=False, bins = 20)
+pg.map_upper(sns.scatterplot)
+pg.map_lower(sns.histplot, bins = 20)
+```

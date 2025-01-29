@@ -13,3 +13,5 @@ build
 subprojects/packagecache/
 subprojects/fglt-*
 .DS_Store
+docs/tutorial/01-getting-started_files/
+docs/tutorial/01-getting-started.md

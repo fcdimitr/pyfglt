@@ -2,12 +2,24 @@ site_name: pyFGLT
 site_url: https://fcdimitr.github.io/pyfglt
 theme:
   name: material
+  features:
+    - content.code.copy
 
 nav:
   - Home: index.md
-  - Reference:
-    - API: api.md
+  - Getting started: tutorial/01-getting-started.md
+  - API: api.md
+  
 
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+ 
 plugins:
   - search
   - mkdocstrings:
