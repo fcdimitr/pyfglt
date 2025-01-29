@@ -72,8 +72,28 @@ jobs:
 
     - name: Show built wheels
       run: ls -l dist
-    - name: Publish package distributions to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+
+    - name: Upload wheels as artifact
+      uses: actions/upload-artifact@v3
       with:
-        repository-url: https://test.pypi.org/legacy/
+        name: built-wheels
+        path: dist/*
+
+  publish:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download wheels
+        uses: actions/download-artifact@v3
+        with:
+          name: built-wheels
+          path: dist
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
 
