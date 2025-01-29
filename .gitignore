@@ -11,5 +11,5 @@ dist
 build
 
 subprojects/packagecache/
-subprojects/fglt*/
+subprojects/fglt-*
 .DS_Store

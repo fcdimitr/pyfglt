@@ -2,3 +2,20 @@ site_name: pyFGLT
 site_url: https://fcdimitr.github.io/pyfglt
 theme:
   name: material
+
+nav:
+  - Home: index.md
+  - Reference:
+    - API: api.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      # Adjust these as you prefer
+      handlers:
+        python:
+          # Adjust these as you prefer
+          options:
+            show_source: true  # Display a "view source" link
+          # Template for linking to GitHub
