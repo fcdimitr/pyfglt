@@ -1,0 +1,20 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Fast graphlet transform of sparse graphs
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - family-names: Floros
+    given-names: Dimitris
+  - family-names: Pitsianis
+    given-names: Nikos
+  - family-names: Sun
+    given-names: Xiaobai
+identifiers:
+  - type: doi
+    value: 10.1109/HPEC43674.2020.9286205
+url: 'http://dx.doi.org/10.1109/HPEC43674.2020.9286205'
