@@ -6,7 +6,8 @@
 [![Changelog](https://img.shields.io/github/v/release/fcdimitr/pyfglt?include_prereleases&label=changelog)](https://github.com/fcdimitr/pyfglt/releases)
 [![License](https://img.shields.io/github/license/fcdimitr/pyfglt)](https://github.com/fcdimitr/pyfglt/blob/main/LICENSE)
 
-Python package/wrapper of Fast Graphlet Transform
+Python package/wrapper of Fast Graphlet Transform. See the [documentation
+overview](https://fcdimitr.github.io/pyfglt/) for more information.
 
 ## Installation
 
@@ -16,9 +17,26 @@ pip install pyfglt
 ```
 ## Usage
 
-Usage instructions go here.
+See the examples under:
 
-## Development
+- [Getting started](https://fcdimitr.github.io/pyfglt/tutorial/01-getting-started)
+- [Advanced usage](https://fcdimitr.github.io/pyfglt/tutorial/02-graphlet-based-network-properties)
+
+## Citation
+
+If you use this package, please cite this paper:
+
+```bibtex
+@article{fglt,
+    author = {Floros, Dimitris and Pitsianis, Nikos and Sun, Xiaobai},
+    journal = {IEEE HPEC},
+    pages = {1--8},
+    title = {{Fast graphlet transform of sparse graphs}},
+    year = {2020}
+}
+```
+
+## Development/Contribution
 
 To contribute to this library, first checkout the code. Then create a new virtual environment:
 ```bash
