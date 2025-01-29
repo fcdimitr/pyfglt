@@ -31,6 +31,6 @@ jobs:
       - name: Render Quarto files to Markdown
         run: |
           # This command will look for .qmd files in the docs/ folder (by default) and render them to .md
-          quarto render docs/tutorial/*.qmd
+          quarto render docs/tutorial
 
       - run: mkdocs gh-deploy --force
