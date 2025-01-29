@@ -1,6 +1,6 @@
 ---
 title: "Getting started"
-format: gfm+footnotes+backtick_code_blocks+yaml_metadata_block
+format: gfm+footnotes+yaml_metadata_block
 jupyter: python3
 ---
 
