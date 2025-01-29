@@ -27,8 +27,6 @@ jobs:
       - run: pip install '.[docs]'
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: "latest"  # or pin to a specific version
 
       - name: Render Quarto files to Markdown
         run: |
