@@ -1,6 +1,5 @@
 ---
 title: "Getting started"
-format: gfm+footnotes+yaml_metadata_block
 jupyter: python3
 ---
 
@@ -53,26 +52,26 @@ plt.show()
 
 import pyfglt.fglt as fg
 
-f, fn = fg.compute(G)
+F = fg.compute(G)
 ```
 
 The returned object is a dataframe where rows correspond to nodes and columns to the 16 graphlets up to 4-node graphlets.
 For example, we can see the number of each graphlet incident to the first 5 nodes:
 
 ```python
-fn.head()
+F.head()
 ```
 ```{python}
 #| echo: false
 from IPython.display import Markdown
-Markdown(fn.head().to_markdown())
+Markdown(F.head().to_markdown())
 ```
 
 ### Visualize graphlet distributions
 
 ```{python}
 import seaborn as sns
-pg = sns.PairGrid(fn.iloc[:,1:5])
+pg = sns.PairGrid(F.iloc[:,1:5])
 pg.map_diag(sns.histplot, fill=False, bins = 20)
 pg.map_upper(sns.scatterplot)
 pg.map_lower(sns.histplot, bins = 20)

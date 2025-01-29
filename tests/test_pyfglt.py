@@ -17,7 +17,7 @@ def test_sample_graphs(mtxname):
     with open(f'subprojects/fglt-2.0.0/testdata/{mtxname}.mtx', 'r', encoding='utf-8') as mm_file:
         P = csc_matrix(mmread(mm_file))
 
-    f, fn = compute(P)
+    fn = compute(P)
 
     fn_gold = pd.read_csv(f'subprojects/fglt-2.0.0/testdata/{mtxname}_freq_net_gold.csv', index_col = 0)
 
@@ -26,7 +26,7 @@ def test_sample_graphs(mtxname):
 @pytest.mark.parametrize('n', [8, 13, 17])
 def test_star_graph(n):
     g = nx.star_graph(n)
-    f, fn = compute(g)
+    fn = compute(g)
 
     # create a dataframe using COLUMNS as columns from a numpy array
     # of length n+1 by 16; fill with zeros

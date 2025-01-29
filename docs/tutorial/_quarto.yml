@@ -1,0 +1,7 @@
+project:
+  output-dir: .
+  render:
+    - "*.qmd"
+    - "!*.md"
+
+format: gfm+footnotes+yaml_metadata_block

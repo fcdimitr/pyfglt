@@ -1,13 +1,16 @@
 site_name: pyFGLT
 site_url: https://fcdimitr.github.io/pyfglt
+repo_url: https://github.com/fcdimitr/pyfglt
 theme:
   name: material
   features:
     - content.code.copy
+    - navigation.instant
 
 nav:
   - Home: index.md
   - Getting started: tutorial/01-getting-started.md
+  - "Advanced: network analysis": tutorial/02-graphlet-based-network-properties.md
   - API: api.md
   
 
@@ -19,7 +22,12 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
- 
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
 plugins:
   - search
   - mkdocstrings:

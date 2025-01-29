@@ -31,18 +31,23 @@ COLUMNS = [
 ]
 
 @typechecked
-def compute(A: Union[nx.Graph, csc_matrix]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def compute(A: Union[nx.Graph, csc_matrix], raw: bool = False) -> Union[pd.DataFrame, tuple[pd.DataFrame, pd.DataFrame]]:
     """Compute the counts fo the Fast Graphlet Transform.
 
     Args:
-        A (Union[nx.Graph, csc_matrix]): The adjacency matrix of the graph.
+        A (Union[nx.Graph, csc_matrix]): Either the graph as a `networkx.Graph` object 
+                                         or the adjacency matrix of the graph in `scipy.sparse.csc_matrix` format.
+        raw (bool): If True, return both the raw and the net counts of the graphlets. 
+                    If False, then return only the normalized counts. 
+                    Defaults to False.
 
     Accepts either an undirected, unweighted NetworkX graph or a CSC sparse matrix.
     If a NetworkX graph is provided, converts it to a CSC adjacency matrix.
     If a CSC matrix is provided, verifies that it is unweighted and symmetric.
 
     Returns:
-        F (DataFrame): A dataframe with the counts of the graphlets.
+        F (DataFrame): A dataframe with the net counts of the graphlets.
+        F_raw (DataFrame): A dataframe with the raw counts of the graphlets (if raw=True).
     """
 
     # If input is a NetworkX graph
@@ -88,4 +93,7 @@ def compute(A: Union[nx.Graph, csc_matrix]) -> tuple[pd.DataFrame, pd.DataFrame]
     F.index.name = "Node id (0-based)"
     FN.index.name = "Node id (0-based)"
 
-    return F, FN
+    if raw:
+        return FN, F
+    else:
+        return FN

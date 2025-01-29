@@ -1,9 +1,10 @@
 # pyfglt
 
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://fcdimitr.github.io/pyfglt/)
 [![PyPI](https://img.shields.io/pypi/v/pyfglt.svg)](https://pypi.org/project/pyfglt/)
 [![Tests](https://github.com/fcdimitr/pyfglt/actions/workflows/test.yml/badge.svg)](https://github.com/fcdimitr/pyfglt/actions/workflows/test.yml)
 [![Changelog](https://img.shields.io/github/v/release/fcdimitr/pyfglt?include_prereleases&label=changelog)](https://github.com/fcdimitr/pyfglt/releases)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/fcdimitr/pyfglt/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/fcdimitr/pyfglt)](https://github.com/fcdimitr/pyfglt/blob/main/LICENSE)
 
 Python package/wrapper of Fast Graphlet Transform
 

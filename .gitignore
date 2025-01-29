@@ -15,3 +15,5 @@ subprojects/fglt-*
 .DS_Store
 docs/tutorial/01-getting-started_files/
 docs/tutorial/01-getting-started.md
+docs/tutorial/02-graphlet-based-network-properties_files/
+docs/tutorial/02-graphlet-based-network-properties.md

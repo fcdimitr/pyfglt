@@ -1,0 +1,26 @@
+---
+title: "Graphlet-based network properties"
+jupyter: python3
+---
+
+# Graphlet-based network properties
+
+You need to install the following packages for this demo.
+
+```bash
+pip install pyfglt networkx matplotlib seaborn
+```
+
+## Relative graphlet frequency (RGF) distance
+
+> **In progress; to be added shortly** 
+
+
+## Graphlet degree distribution (GDD) agreement
+
+> **In progress; to be added shortly** 
+
+
+## Graphlet Correlation Matrix (GCM)
+
+> **In progress; to be added shortly** 
