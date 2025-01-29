@@ -26,6 +26,13 @@ four nodes are shown below.
 
 ![](https://raw.githubusercontent.com/fcdimitr/fglt/master/figs/graphlet-dictionary.png)
 
+## Installation
+
+Install this library using `pip`:
+```bash
+pip install pyfglt
+```
+
 ## Usage
 
 See the examples under:
