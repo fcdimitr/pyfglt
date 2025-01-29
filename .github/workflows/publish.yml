@@ -28,8 +28,12 @@ jobs:
       run: |
         pytest
   deploy:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     needs: [test]
+    runs-on: ${{ matrix.os }}
     permissions:
       id-token: write
     steps:
@@ -59,7 +63,7 @@ jobs:
         CIBW_MANYLINUX_X86_64_IMAGE: "quay.io/pypa/manylinux2014_x86_64:latest"
 
         # Force the wheel's minimum macOS version to 14.0
-        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        # MACOSX_DEPLOYMENT_TARGET: "14.0"
 
       run: |
         # This will build wheels for all supported Python versions on the current OS.
