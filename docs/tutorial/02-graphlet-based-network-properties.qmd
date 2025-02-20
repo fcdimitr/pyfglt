@@ -5,22 +5,252 @@ jupyter: python3
 
 # Graphlet-based network properties
 
+## Setup
+
 You need to install the following packages for this demo.
 
 ```bash
-pip install pyfglt networkx matplotlib seaborn
+pip install pyfglt networkx pandas numpy
 ```
+
+We'll create three graphs as running examples in this tutorial.
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import networkx as nx
+
+
+seed = 0  # seed random number generators for reproducibility
+
+G1 = nx.barabasi_albert_graph(500, 7, seed = 0)
+G2 = nx.barabasi_albert_graph(1000, 8, seed = 1)
+G3 = nx.watts_strogatz_graph(750, 7, 0.02, seed = 0)
+```
+
+We then compute the graphlet frequencies for each network.
+
+```{python}
+# Create dummy data for two graphs
+import pyfglt.fglt as fg
+
+F1 = fg.compute(G1)
+F2 = fg.compute(G2)
+F3 = fg.compute(G3)
+```
+
+---
 
 ## Relative graphlet frequency (RGF) distance
 
-> **In progress; to be added shortly** 
+The **Relative Graphlet Frequency** of an orbit is the frequency of that orbit (summing across all vertices) divided by the sum of **all** orbit frequencies in the graph.
 
+**RGF Distance** between two graphs $G$ and $H$ for orbits $\{1,\ldots,16\}$ can be defined as:
+
+$$
+d_{\text{RGF}}(G,H) \;=\; \sum_{k=1}^{16} \left\lvert \frac{F_G(k)}{\sum_{j=1}^{16} F_G(j)} \;-\; \frac{F_H(k)}{\sum_{j=1}^{16} F_H(j)} \right\rvert
+$$
+
+where $F_G(k)$ is the sum of orbit $k$ counts across all vertices in graph $G$.
+
+```{python}
+def compute_rgf_distance(df_g1, df_g2):
+    """
+    Compute the Relative Graphlet Frequency (RGF) distance between two graphs
+    represented by DataFrames of orbit counts.
+
+    Parameters
+    ----------
+    df_g1 : pd.DataFrame
+        Orbit counts for Graph 1 (rows=vertices, columns=orbits).
+    df_g2 : pd.DataFrame
+        Orbit counts for Graph 2 (rows=vertices, columns=orbits).
+
+    Returns
+    -------
+    float
+        The RGF distance between the two graphs.
+    """
+    # Sum of orbit counts across all vertices for each orbit
+    orbit_sums_g1 = df_g1.sum(axis=0)  # Series of length = number_of_orbits
+    orbit_sums_g2 = df_g2.sum(axis=0)
+
+    # Compute total counts
+    total_g1 = orbit_sums_g1.sum()
+    total_g2 = orbit_sums_g2.sum()
+
+    # Relative frequencies for each orbit
+    rel_freq_g1 = orbit_sums_g1 / total_g1 if total_g1 != 0 else orbit_sums_g1 * 0
+    rel_freq_g2 = orbit_sums_g2 / total_g2 if total_g2 != 0 else orbit_sums_g2 * 0
+
+    # RGF distance = sum of absolute differences
+    rgf_distance = np.sum(np.abs(rel_freq_g1 - rel_freq_g2))
+    return rgf_distance
+
+rgf_dist = np.zeros((3,3))
+for i,Fa in enumerate( [F1, F2, F3] ):
+    for j,Fb in enumerate( [F1, F2, F3] ):
+        rgf_dist[i,j] = compute_rgf_distance(Fa, Fb)
+print( rgf_dist )
+```
+
+---
 
 ## Graphlet degree distribution (GDD) agreement
 
-> **In progress; to be added shortly** 
+The **Graphlet Degree** of a vertex for a specific orbit is the number of times that vertex touches (or participates in) that orbit.  
+Given the orbit counts in the DataFrame, each column is effectively the graphlet degree for each vertex across an orbit.
 
+To measure **GDD Agreement** between two graphs, one approach (inspired by GraphCrunch2) is:
+
+1. For each orbit $ i $ (from 1 to 16):
+   - Build the distribution (histogram) of the graphlet degrees $ d^G_i $ across all vertices in graph $ G $.  
+   - Same for graph $ H $.  
+2. Compare these two distributions using an overlap measure. For discrete distributions $P_i^G$ and $P_i^H$:
+   $$
+   \text{Overlap}(P_i^G, P_i^H) = \sum_k \min\bigl(P_i^G(k), P_i^H(k)\bigr)
+   $$
+   where $P_i^G(k)$ is the fraction of vertices in $G$ that have graphlet degree $k$ for orbit $i$.  
+3. Average this overlap across all orbits:
+   $$
+   \text{GDD-Agreement}(G,H) = \frac{1}{16} \sum_{i=1}^{16} \text{Overlap}(P_i^G, P_i^H).
+   $$
+
+This yields a value in $[0, 1]$, where 1 means perfect agreement of distributions.
+
+```{python}
+def compute_gdd_agreement(df_g1, df_g2, bins=None):
+    """
+    Compute Graphlet Degree Distribution (GDD) agreement between two graphs.
+
+    Parameters
+    ----------
+    df_g1 : pd.DataFrame
+        Orbit counts for Graph 1 (rows=vertices, columns=orbits).
+    df_g2 : pd.DataFrame
+        Orbit counts for Graph 2 (rows=vertices, columns=orbits).
+    bins : int or sequence, optional
+        Bins for histogram. If None, will try an automatic approach.
+
+    Returns
+    -------
+    float
+        The GDD agreement in [0, 1].
+    """
+    n_orbits = df_g1.shape[1]
+    # We assume df_g1 and df_g2 have the same shape: #orbits = n_orbits
+
+    # We can find a reasonable range for all orbit degrees combined
+    combined_max = max(df_g1.values.max(), df_g2.values.max())
+    if bins is None:
+        # We'll bin from 0 up to the max count + 1
+        bins = np.arange(0, combined_max + 2) - 0.5  # so that each integer is its own bin
+
+    overlaps = []
+    
+    for orbit_col in df_g1.columns:
+        # Distribution for Graph 1, orbit_col
+        hist_g1, _ = np.histogram(df_g1[orbit_col], bins=bins, density=True)
+        # Distribution for Graph 2, orbit_col
+        hist_g2, _ = np.histogram(df_g2[orbit_col], bins=bins, density=True)
+        
+        # Overlap for this orbit
+        overlap = np.sum(np.minimum(hist_g1, hist_g2))
+        overlaps.append(overlap)
+    
+    # Average overlap across orbits
+    gdd_agreement = np.mean(overlaps)
+    return gdd_agreement
+
+gdd_agree = np.zeros((3,3))
+for i,Fa in enumerate( [F1, F2, F3] ):
+    for j,Fb in enumerate( [F1, F2, F3] ):
+        gdd_agree[i,j] = compute_gdd_agreement(Fa, Fb)
+print( gdd_agree )
+```
+
+---
 
 ## Graphlet Correlation Matrix (GCM)
 
-> **In progress; to be added shortly** 
+The **Graphlet Correlation Matrix (GCM)** captures correlations (usually Spearman or Pearson) between different orbits across the vertices. Essentially:
+
+$$
+GCM(G) \quad=\quad \Bigl(\rho_{i,j}\Bigr)_{1 \le i,j \le 16}
+$$
+
+where $\rho_{i,j}$ is the correlation (e.g., Spearman) between the **i-th** orbit degrees and the **j-th** orbit degrees across all vertices in graph $G$.
+
+```{python}
+def compute_graphlet_correlation_matrix(df_g, method='spearman'):
+    """
+    Compute the Graphlet Correlation Matrix (GCM) for a single graph.
+
+    Parameters
+    ----------
+    df_g : pd.DataFrame
+        Orbit counts for a graph (rows=vertices, columns=orbits).
+    method : str
+        Correlation method. Can be 'pearson', 'spearman', or 'kendall'.
+
+    Returns
+    -------
+    pd.DataFrame
+        Correlation matrix of shape (n_orbits, n_orbits).
+    """
+    return df_g.iloc[:,1:].corr(method=method)
+
+gcm1 = compute_graphlet_correlation_matrix(F1, method='spearman')
+gcm2 = compute_graphlet_correlation_matrix(F2, method='spearman')
+gcm3 = compute_graphlet_correlation_matrix(F3, method='spearman')
+
+# print("GCM for Graph 1:")
+# display(gcm1.round(3))
+
+# print("\nGCM for Graph 2:")
+# display(gcm2.round(3))
+
+# print("\nGCM for Graph 3:")
+# display(gcm3.round(3))
+```
+
+You now have two correlation matrices (GCM) for each graph.
+
+If you want to measure how similar or different the GCMs are between two graphs, you could compute a matrix distance (e.g., Frobenius norm of the difference, or sum of absolute differences, etc.):
+
+```{python}
+def gcm_distance(gcm1, gcm2):
+    """
+    Compute a simple distance between two correlation matrices.
+    For instance, the sum of absolute differences (L1 distance).
+
+    Parameters
+    ----------
+    gcm1, gcm2 : pd.DataFrame
+        Two correlation matrices of the same shape.
+
+    Returns
+    -------
+    float
+        A distance measure between the two GCMs.
+    """
+    diff = gcm1.values - gcm2.values
+    return np.sum(np.abs(diff))
+
+dist_gcm = gcm_distance(gcm1, gcm2)
+dist_gcm = np.zeros((3,3))
+for i,Fa in enumerate( [gcm1, gcm2, gcm3] ):
+    for j,Fb in enumerate( [gcm1, gcm2, gcm3] ):
+        dist_gcm[i,j] = gcm_distance(Fa, Fb)
+print( dist_gcm )
+```
+
+## Summary
+
+- **RGF Distance**: Captures how different the relative orbit frequencies are between two graphs.  
+- **GDD Agreement**: Measures how similarly the two graphs’ vertices distribute their orbit degrees.  
+- **GCM**: Captures how orbits co-vary (correlate) within a single graph, and can also be compared across graphs.  
+
+These measures are widely used in graphlet-based network comparison (e.g., Netdis, GraphCrunch2, etc.). Modify these examples to suit your exact needs (e.g., weighting orbits differently, using different correlation measures, etc.).
+
