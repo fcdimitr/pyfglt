@@ -1,6 +1,6 @@
 [project]
 name = "pyfglt"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python package/wrapper of Fast Graphlet Transform"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,10 +12,9 @@ classifiers = [
 dependencies = [
     "numpy >= 1.19.5",
     "scipy >= 1.7.3",
-    "nextprod >= 1.0",
-    "pandas==2.2.3",
+    "pandas >= 2.2.3",
     "networkx >= 3.2.1",
-    "typeguard>=4.4.1", # runtime type checking
+    "typeguard >= 4.4.1", # runtime type checking
 
 ]
 
