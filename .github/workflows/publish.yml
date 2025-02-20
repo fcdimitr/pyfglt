@@ -76,7 +76,7 @@ jobs:
     - name: Upload wheels as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: built-wheels
+        name: built-wheel-${{ matrix.os }}
         path: dist/*
 
   publish:
@@ -91,7 +91,7 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v4
         with:
-          name: built-wheels
+          pattern: built-wheel-*
           path: dist
 
       - name: Publish package distributions to TestPyPI
