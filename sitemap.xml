@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://fcdimitr.github.io/pyfglt/</loc>
+         <lastmod>2025-02-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fcdimitr.github.io/pyfglt/api/</loc>
+         <lastmod>2025-02-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fcdimitr.github.io/pyfglt/tutorial/01-getting-started/</loc>
+         <lastmod>2025-02-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fcdimitr.github.io/pyfglt/tutorial/02-graphlet-based-network-properties/</loc>
+         <lastmod>2025-02-20</lastmod>
+    </url>
+</urlset>

@@ -1,0 +1,170 @@
+---
+title: "Graphlet-based network properties"
+jupyter: python3
+---
+
+# Graphlet-based network properties
+
+## Setup
+
+You need to install the following packages for this demo.
+
+```bash
+pip install pyfglt networkx pandas numpy
+```
+
+We'll create three graphs as running examples in this tutorial.
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import networkx as nx
+
+G1 = nx.barabasi_albert_graph(500, 7, seed = 0)
+G2 = nx.barabasi_albert_graph(1000, 8, seed = 1)
+G3 = nx.watts_strogatz_graph(750, 7, 0.02, seed = 0)
+```
+
+We then compute the graphlet frequencies for each network.
+
+```{python}
+import pyfglt.fglt as fg
+
+F1 = fg.compute(G1)
+F2 = fg.compute(G2)
+F3 = fg.compute(G3)
+```
+
+---
+
+## Relative graphlet frequency (RGF) distance
+
+The **Relative Graphlet Frequency** of an orbit is the frequency of that orbit (summing across all vertices) divided by the sum of **all** orbit frequencies in the graph.
+
+**RGF Distance** between two graphs $G$ and $H$ for orbits $\{1,\ldots,16\}$ can be defined as:
+
+$$
+d_{\text{RGF}}(G,H) \;=\; \sum_{k=1}^{16} \left\lvert \frac{F_G(k)}{\sum_{j=1}^{16} F_G(j)} \;-\; \frac{F_H(k)}{\sum_{j=1}^{16} F_H(j)} \right\rvert
+$$
+
+where $F_G(k)$ is the sum of orbit $k$ counts across all vertices in graph $G$.
+
+```{python}
+rgf_dist = np.zeros((3,3))
+for i,Fa in enumerate( [F1, F2, F3] ):
+    for j,Fb in enumerate( [F1, F2, F3] ):
+        rgf_dist[i,j] = fg.compute_rgf_distance(Fa, Fb)
+```
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown(
+    pd.DataFrame(
+        rgf_dist, 
+        columns=['G1', 'G2', 'G3'], 
+        index=['G1', 'G2', 'G3']).to_markdown()
+)
+```
+
+
+---
+
+## Graphlet degree distribution (GDD) agreement
+
+The **Graphlet Degree** of a vertex for a specific orbit is the number of times that vertex touches (or participates in) that orbit.  
+Given the orbit counts in the DataFrame, each column is effectively the graphlet degree for each vertex across an orbit.
+
+To measure **GDD Agreement** between two graphs, one approach (inspired by GraphCrunch2) is:
+
+1. For each orbit $i$ (from 1 to 16):
+   - Build the distribution (histogram) of the graphlet degrees $d^G_i$ across all vertices in graph $G$.  
+   - Same for graph $H$.  
+2. Compare these two distributions using an overlap measure. For discrete distributions $P_i^G$ and $P_i^H$:
+   $$
+   \text{Overlap}(P_i^G, P_i^H) = \sum_k \min\bigl(P_i^G(k), P_i^H(k)\bigr)
+   $$
+   where $P_i^G(k)$ is the fraction of vertices in $G$ that have graphlet degree $k$ for orbit $i$.  
+3. Average this overlap across all orbits:
+   $$
+   \text{GDD-Agreement}(G,H) = \frac{1}{16} \sum_{i=1}^{16} \text{Overlap}(P_i^G, P_i^H).
+   $$
+
+This yields a value in $[0, 1]$, where 1 means perfect agreement of distributions.
+
+```{python}
+gdd_agree = np.zeros((3,3))
+for i,Fa in enumerate( [F1, F2, F3] ):
+    for j,Fb in enumerate( [F1, F2, F3] ):
+        gdd_agree[i,j] = fg.compute_gdd_agreement(Fa, Fb)
+```
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown(
+    pd.DataFrame(
+        gdd_agree, 
+        columns=['G1', 'G2', 'G3'], 
+        index=['G1', 'G2', 'G3']).to_markdown()
+)
+```
+
+---
+
+## Graphlet Correlation Matrix (GCM)
+
+The **Graphlet Correlation Matrix (GCM)** captures correlations (usually Spearman or Pearson) between different orbits across the vertices. Essentially:
+
+$$
+GCM(G) \quad=\quad \Bigl(\rho_{i,j}\Bigr)_{1 \le i,j \le 16}
+$$
+
+where $\rho_{i,j}$ is the correlation (e.g., Spearman) between the **i-th** orbit degrees and the **j-th** orbit degrees across all vertices in graph $G$.
+
+```{python}
+gcm1 = fg.compute_graphlet_correlation_matrix(F1, method='spearman')
+gcm2 = fg.compute_graphlet_correlation_matrix(F2, method='spearman')
+gcm3 = fg.compute_graphlet_correlation_matrix(F3, method='spearman')
+```
+
+### GCM example
+
+We now have the correlation matrix (GCM) for each graph.
+The GCM for graph `G1` is shown below
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown(gcm1.to_markdown())
+```
+
+If we want to measure how similar or different the GCMs are between two graphs, we can compute a matrix distance (e.g., Frobenius norm of the difference, or sum of absolute differences, etc.):
+
+```{python}
+dist_gcm = np.zeros((3,3))
+for i,Fa in enumerate( [gcm1, gcm2, gcm3] ):
+    for j,Fb in enumerate( [gcm1, gcm2, gcm3] ):
+        dist_gcm[i,j] = fg.gcm_distance(Fa, Fb)
+```
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown(
+    pd.DataFrame(
+        dist_gcm, 
+        columns=['G1', 'G2', 'G3'], 
+        index=['G1', 'G2', 'G3']).to_markdown()
+)
+```
+
+## Summary
+
+- **RGF Distance**: Captures how different the relative orbit frequencies are between two graphs.  
+- **GDD Agreement**: Measures how similarly the two graphs’ vertices distribute their orbit degrees.  
+- **GCM**: Captures how orbits co-vary (correlate) within a single graph, and can also be compared across graphs.  
+
+These measures are widely used in graphlet-based network comparison (e.g., Netdis, GraphCrunch2, etc.). Modify these examples to suit your exact needs (e.g., weighting orbits differently, using different correlation measures, etc.).
+
