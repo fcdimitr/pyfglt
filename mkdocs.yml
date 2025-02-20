@@ -5,7 +5,6 @@ theme:
   name: material
   features:
     - content.code.copy
-    - navigation.instant
 
 nav:
   - Home: index.md
